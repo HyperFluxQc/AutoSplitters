@@ -25,14 +25,6 @@ split
 
 }
 
-reset 
-{
-	if((old.Reset != 0x25)&&(current.Reset == 0x25))
-	{
-		return true;
-	}
-}
-
 start 
 {
 	if((current.GameStart == 0x00)&&(old.GameStart == 0x50)&&(old.IntroVal == 0x00))
