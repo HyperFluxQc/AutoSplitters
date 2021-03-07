@@ -17,6 +17,27 @@ state("nestopia")
 	byte IntroVal :		"nestopia.exe", 0x1b2bcc, 0, 8, 0xc,0xc, 0x128;
 	ushort Reset :			"nestopia.exe", 0x1b2bcc, 0, 8, 0xc,0xc, 0x68;
 }
+
+startup 
+{
+	// First input is 234 frames after the game starts
+	settings.Add("StartDelay", true, "Delay start timer by 3.9s (don't use this with Start Timer offset)");
+
+	refreshRate = 60;
+	vars.stopWatch = new Stopwatch();
+	vars.LastLevel = 0;
+
+	// Since it's not always safe to assume a user's script goes through the start{} & reset{} blocks,
+	// we must use a System.EventHandler and subscribe it to timer events. This covers manual starting/resetting.
+	vars.OnReset = (LiveSplit.Model.Input.EventHandlerT<TimerPhase>)((s, e) => vars.LastLevel = 0);
+	timer.OnReset += vars.OnReset;
+	vars.OnStart = (System.EventHandler)((s, e) => vars.stopWatch.Reset());
+	timer.OnStart += vars.OnStart;
+}
+
+shutdown {
+	timer.OnReset -= vars.OnReset;
+	timer.OnStart -= vars.OnStart;
 }
 
 split 
@@ -33,23 +54,23 @@ split
 
 start 
 {
+	if (vars.stopWatch.IsRunning) {
+		return vars.stopWatch.ElapsedMilliseconds >= 3900;
+	}
 	if (current.GameStart == 0x00 && old.GameStart == 0x50 && old.IntroVal == 0x00)
 	{
-		return true;
+		if (!settings["StartDelay"]) {
+				return true;
+			} else {
+				vars.stopWatch.Start();
+				return false;
+			}
 	}
 }
 
 reset
 {
-	if (current.Reset == 0xA025)
-	{
-		vars.LastLevel = 0;
-		return true;
-	}
+	return current.Reset == 0xA025;
 }
 
-startup 
-{
-	vars.LastLevel = 0;
-	refreshRate = 60;
-}
+
