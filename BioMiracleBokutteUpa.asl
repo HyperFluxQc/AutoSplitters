@@ -1,4 +1,4 @@
-state("fceux", "2.2.3")	
+state("fceux", "2.2.3")
 {
 	byte Level :			0x003B1388, 0x33;
 	byte StageEnd :		0x003B1388, 0x151;
@@ -72,5 +72,3 @@ reset
 {
 	return current.Reset == 0xA025;
 }
-
-
