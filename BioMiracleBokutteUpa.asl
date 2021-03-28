@@ -5,7 +5,7 @@ state("fceux", "2.2.3")
 	byte FinalBoss :	0x003B1388, 0x33b;
 	byte GameStart :	0x003B1388, 0x338;
 	byte IntroVal :		0x003B1388, 0xc0;
-	ushort Reset :			0x003B1388, 0x00;
+	ushort Reset :			0x003B1388, 0x200;
 }
 
 state("nestopia") 
@@ -15,7 +15,7 @@ state("nestopia")
 	byte FinalBoss :	"nestopia.exe", 0x1b2bcc, 0, 8, 0xc,0xc, 0x3A3;
 	byte GameStart :	"nestopia.exe", 0x1b2bcc, 0, 8, 0xc,0xc, 0x3A0;
 	byte IntroVal :		"nestopia.exe", 0x1b2bcc, 0, 8, 0xc,0xc, 0x128;
-	ushort Reset :			"nestopia.exe", 0x1b2bcc, 0, 8, 0xc,0xc, 0x68;
+	ushort Reset :			"nestopia.exe", 0x1b2bcc, 0, 8, 0xc,0xc, 0x268;
 }
 
 startup 
@@ -70,5 +70,5 @@ start
 
 reset
 {
-	return current.Reset == 0xA025;
+	return current.Reset == 0x0000;
 }
